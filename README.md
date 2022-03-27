@@ -25,3 +25,7 @@ node src/server.js
 curl -X GET http://localhost:4001/
 ```
 
+### 02 POST data to the server
+```
+curl -X POST http://localhost:4001/ -H 'Content-Type: application/json' -d "{\"temperature\": 42}"
+```

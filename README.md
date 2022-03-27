@@ -18,3 +18,10 @@ npm start
 or
 node src/server.js
 ```
+
+---
+### 01 First endpoint (Text/plain Hello World)
+```
+curl -X GET http://localhost:4001/
+```
+

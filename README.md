@@ -34,3 +34,8 @@ curl -X POST http://localhost:4001/ -H 'Content-Type: application/json' -d "{\"t
 ```
 curl -X DELETE http://localhost:4001/
 ```
+
+### 04 Changing object values with PUT and query & path parameters
+```
+curl -X PUT http://localhost:4001/30?id=1
+```

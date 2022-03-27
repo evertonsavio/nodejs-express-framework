@@ -8,14 +8,21 @@ const port = 4001
 server.use(json())
 server.use(cors())
 
+let temperatures = [];
+
 server.get('/', (req, res) => {
-    res.send("Hello World\n")
+    res.status(200).send(`${temperatures}\n`)
 })
 
 server.post('/', (req, res) => {
     const request = req.body
-    console.log(request.temperature)
+    temperatures.push(request.temperature)
     res.status(201).send()
+})
+
+server.delete('/', (req, res) => {
+    temperatures = [];
+    res.status(200).send()
 })
 
 server.listen(port, (req, res) => {

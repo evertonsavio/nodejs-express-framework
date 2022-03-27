@@ -29,3 +29,8 @@ curl -X GET http://localhost:4001/
 ```
 curl -X POST http://localhost:4001/ -H 'Content-Type: application/json' -d "{\"temperature\": 42}"
 ```
+
+### 03 GET data saved on server & DELETE endpoint
+```
+curl -X DELETE http://localhost:4001/
+```

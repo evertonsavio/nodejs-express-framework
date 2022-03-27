@@ -15,6 +15,12 @@ server.get('/', (req, res) => {
     res.status(200).send(temperatures)
 })
 
+server.get('/:id', (req, res) => {
+    const pathId = req.params.id
+    const temperatureObject = temperatures.filter(temperature => temperature.id == pathId)
+    res.status(200).send(temperatureObject)
+})
+
 server.post('/', (req, res) => {
     const request = req.body
 
@@ -32,22 +38,30 @@ server.delete('/', (req, res) => {
     res.status(200).send()
 })
 
+server.delete('/query', (req, res) => {
+    const queryId = req.query.id
+    
+    filteredList = temperatures.filter(temperature => temperature.id != queryId)
+    temperatures = filteredList
+
+    res.status(200).send()
+})
 
 server.put('/:value', (req, res) => {
-    const value = req.params.value
-    const id = req.query.id
-    console.log(`QUERY IS ${id} AND PARAMETER IS ${value}`)
+    const pathValue = req.params.value
+    const queryId = req.query.id
+    console.log(`QUERY IS ${queryId} AND PARAMETER IS ${pathValue}`)
     
     temperatures.map(temperature => {
-        if(temperature.id == id){
-            console.log(`FOUND ID ${id} CHANGING VALUE OF OBJECT`)
-            temperature.temperature = value
+        if(temperature.id == queryId){
+            console.log(`FOUND ID ${queryId} CHANGING VALUE OF OBJECT`)
+            temperature.temperature = pathValue
         }
     });
 
     res.status(200).send()
 })
 
-server.listen(port, (req, res) => {
+server.listen(port, () => {
     console.log(`server running on port ${port}`)
 })

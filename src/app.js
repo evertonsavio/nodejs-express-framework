@@ -12,6 +12,12 @@ server.get('/', (req, res) => {
     res.send("Hello World\n")
 })
 
+server.post('/', (req, res) => {
+    const request = req.body
+    console.log(request.temperature)
+    res.status(201).send()
+})
+
 server.listen(port, (req, res) => {
     console.log(`server running on port ${port}`)
 })

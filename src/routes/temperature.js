@@ -1,23 +1,31 @@
 const express = require('express')
 const router = express.Router()
+const Temperature = require('../models/Temperature')
 
 const expressValidator = require('express-validator')
 
-let dummyCount = 0
-let temperatures = [];
-
 const validate = [
-    expressValidator.check('temperature').isLength({min: 1}).withMessage('Field temperature can not be null')
+    expressValidator.check('temperature').isLength({min: 1}).withMessage('Field temperature can not be null'),
+    expressValidator.check('temperature').isNumeric().withMessage('Field temperature should be a number')
 ]
 
 router.get('/', (req, res) => {
-    res.status(200).send(temperatures)
+    Temperature.find().then(temperatures => {
+        res.status(200).send(temperatures);
+    }).catch(error => {
+        res.status(500).send(error)
+    })
 })
 
 router.get('/:id', (req, res) => {
-    const pathId = req.params.id
-    const temperatureObject = temperatures.filter(temperature => temperature.id == pathId)
-    res.status(200).send(temperatureObject)
+
+    Temperature.findById(req.params.id)
+    .then(temperature => {
+        res.status(200).send(temperature)
+    }).catch(error => {
+        res.status(404);
+    })
+
 })
 
 router.post('/', [validate], (req, res) => {
@@ -27,44 +35,45 @@ router.post('/', [validate], (req, res) => {
         return res.status(422).send({erros: erros.array()})
     }
 
-    const request = req.body
+    const temperature = new Temperature({
+        temperature: req.body.temperature
+    })
 
-    const temperatureObject = {
-        id: dummyCount += 1,
-        temperature: request.temperature
-    }
-
-    temperatures.push(temperatureObject)
-    res.status(201).send()
+    temperature.save()
+    .then(result => {
+        res.status(201).send(result)
+    })
 })
 
 router.delete('/', (req, res) => {
-    temperatures = [];
-    res.status(200).send()
+    
+    Temperature.deleteMany().then(result => {
+        res.status(200).send()
+    });
 })
 
 router.delete('/query', (req, res) => {
-    const queryId = req.query.id
     
-    filteredList = temperatures.filter(temperature => temperature.id != queryId)
-    temperatures = filteredList
-
-    res.status(200).send()
+    Temperature.findByIdAndRemove(req.query.id)
+    .then(result => {
+        res.status(200).send(result)
+    }).catch( error => {
+        res.status(404).send()
+    })
 })
 
 router.put('/:value', (req, res) => {
     const pathValue = req.params.value
-    const queryId = req.query.id
-    console.log(`QUERY IS ${queryId} AND PARAMETER IS ${pathValue}`)
-    
-    temperatures.map(temperature => {
-        if(temperature.id == queryId){
-            console.log(`FOUND ID ${queryId} CHANGING VALUE OF OBJECT`)
-            temperature.temperature = pathValue
-        }
-    });
 
-    res.status(200).send()
+    Temperature.findById(req.query.id).then(temperature => {
+        temperature.temperature = pathValue
+        temperature.save().then(result => {
+            res.status(200).send(result)
+        })
+    }).catch( error => {
+        res.status(404).send()
+    })
+
 })
 
 module.exports = router;

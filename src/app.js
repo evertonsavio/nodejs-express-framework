@@ -21,7 +21,7 @@ server.get('/', (req, res) => {
 server.use((req, res) => res.status(404).sendFile(path.join(__dirname, "views", "404.html")));
 
 const main = async () => {
-  await mongoose.connect(process.env.MY_CONN);
+  await mongoose.connect(`mongodb+srv://${process.env.MY_USER}:${process.env.MY_PASSWORD}@cluster0.nw898.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`);
 }
 
 main()
